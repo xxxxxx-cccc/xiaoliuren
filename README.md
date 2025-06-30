@@ -1,1 +1,588 @@
 # xiaoliuren
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小六壬占卜系统</title>
+    <style>
+        :root {
+            --primary-color: #8e44ad;
+            --secondary-color: #9b59b6;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --info-color: #3498db;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: var(--light-color);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #d53369, #daae51);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #bbb;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+        
+        .tab-btn {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50px;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.5);
+        }
+        
+        .tab-content {
+            display: none;
+            background: rgba(30, 30, 46, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #ddd;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.3);
+        }
+        
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);
+        }
+        
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(142, 68, 173, 0.6);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .results {
+            margin-top: 40px;
+            display: none;
+        }
+        
+        .palace-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .palace-card {
+            background: rgba(40, 40, 60, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .palace-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .palace-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .palace-title .number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 12px;
+        }
+        
+        .palace-info {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .palace-element {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        
+        .palace-details {
+            line-height: 1.6;
+            color: #ccc;
+            font-size: 0.95rem;
+        }
+        
+        .palace-details strong {
+            color: white;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>小六壬</h1>
+            <p class="subtitle">小六壬是中国传统占卜术之一，通过分析时间与数字的关联，预测事物的吉凶祸福。</p>
+            <p>秘传九宫，准嘞扣卡</p>
+            <div class="footer">
+                <p>心念所至，卦象自显。</p>
+                <p>无事不挂，子时不起。</p>
+            </div>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="time">时辰起卦</button>
+            <button class="tab-btn" data-tab="number">报数起卦</button>
+        </div>
+        
+        <div id="time-tab" class="tab-content active">
+            <h2>时辰起卦</h2>
+            <p>请输入农历日期和时辰</p>
+            
+            <div class="form-group">
+                <label for="month">农历月份 (1-12)</label>
+                <input type="number" id="month" min="1" max="12" placeholder="例如：5">
+            </div>
+            
+            <div class="form-group">
+                <label for="day">农历日期 (1-30)</label>
+                <input type="number" id="day" min="1" max="30" placeholder="例如：12">
+            </div>
+            
+            <div class="form-group">
+                <label for="hour">时辰 (0-23)</label>
+                <input type="number" id="hour" min="0" max="23" placeholder="例如：15 (下午3点)">
+            </div>
+            
+            <button id="time-btn" class="btn">起卦</button>
+        </div>
+        
+        <div id="number-tab" class="tab-content">
+            <h2>报数起卦</h2>
+            <p>请输入任意三个整数</p>
+            
+            <div class="form-group">
+                <label for="num1">第一个数字</label>
+                <input type="number" id="num1" placeholder="任意整数">
+            </div>
+            
+            <div class="form-group">
+                <label for="num2">第二个数字</label>
+                <input type="number" id="num2" placeholder="任意整数">
+            </div>
+            
+            <div class="form-group">
+                <label for="num3">第三个数字</label>
+                <input type="number" id="num3" placeholder="任意整数">
+            </div>
+            
+            <button id="number-btn" class="btn">起卦</button>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>正在解读天机，请稍候...</p>
+        </div>
+        
+        <div class="results" id="results">
+            <h2>卦象</h2>
+            <div id="result-info"></div>
+            
+            <div class="palace-container" id="palace-container">
+                <!-- 宫位结果将通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>小六壬系统 &copy; 2025 | 传承千年智慧，洞察未来吉凶</p>
+            <p>注：相信科学，拒绝封建迷信。</p>
+        </div>
+    </div>
+    
+    <script>
+        // 宫位数据
+        const palaces = [
+            {
+                name: "大安",
+                element: "木",
+                color: "#27ae60",
+                description: "大吉，诸事顺利，贵人相助。象征平安、稳定、顺利。出行平安，婚姻美满，财运平稳，疾病可愈，诉讼胜诉。"
+            },
+            {
+                name: "留连",
+                element: "木",
+                color: "#f39c12",
+                description: "中凶，诸事拖延，纠缠不清。象征阻碍、拖延、纠缠。出行延误，婚姻波折，财运不利，疾病缠绵，诉讼难结。"
+            },
+            {
+                name: "速喜",
+                element: "火",
+                color: "#27ae60",
+                description: "大吉，诸事迅速，喜庆来临。象征快速、喜庆、吉利。出行顺利，婚姻速成，财运亨通，疾病速愈，诉讼和解。"
+            },
+            {
+                name: "赤口",
+                element: "金",
+                color: "#e74c3c",
+                description: "大凶，口舌是非，官非纠纷。象征口舌、是非、官非。出行不利，婚姻不和，财运损失，疾病凶险，诉讼败诉。"
+            },
+            {
+                name: "小吉",
+                element: "水",
+                color: "#27ae60",
+                description: "小吉，诸事小利，贵人扶持。象征小吉、顺利、助力。出行平安，婚姻圆满，财运小利，疾病无碍，诉讼和解。"
+            },
+            {
+                name: "空亡",
+                element: "土",
+                color: "#e74c3c",
+                description: "大凶，诸事空忙，徒劳无功。象征空虚、失败、徒劳。出行失约，婚姻不成，财运亏损，疾病凶险，诉讼败诉。"
+            },
+            {
+                name: "病府",
+                element: "土",
+                color: "#f39c12",
+                description: "凶，病态异常，需注意健康。象征疾病、异常、治疗。出行不宜，婚姻不顺，财运低迷，疾病需治疗，诉讼不利。"
+            },
+            {
+                name: "桃花",
+                element: "金",
+                color: "#e84393",
+                description: "吉凶参半，异性缘佳但需防纠葛。象征欲望、牵绊、异性缘。出行浪漫，婚姻有缘，财运波动，疾病情绪病，诉讼有人相助。"
+            },
+            {
+                name: "天德",
+                element: "土",
+                color: "#27ae60",
+                description: "大吉，贵人相助，高远发展。象征贵人、上司、高远目标。出行顺利，婚姻美满，财运亨通，疾病康复，诉讼得助。"
+            }
+        ];
+        
+        // 时辰名称
+        const shichen = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+        
+        // 切换标签页
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // 移除所有活动状态
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // 添加当前活动状态
+                button.classList.add('active');
+                document.getElementById(`${button.dataset.tab}-tab`).classList.add('active');
+                
+                // 隐藏结果
+                document.getElementById('results').style.display = 'none';
+            });
+        });
+        
+        // 时辰占卜
+        document.getElementById('time-btn').addEventListener('click', () => {
+            const month = parseInt(document.getElementById('month').value);
+            const day = parseInt(document.getElementById('day').value);
+            const hour = parseInt(document.getElementById('hour').value);
+            
+            // 验证输入
+            if (isNaN(month) || month < 1 || month > 12) {
+                alert('请输入有效的月份 (1-12)');
+                return;
+            }
+            
+            if (isNaN(day) || day < 1 || day > 30) {
+                alert('请输入有效的日期 (1-30)');
+                return;
+            }
+            
+            if (isNaN(hour) || hour < 0 || hour > 23) {
+                alert('请输入有效的时辰 (0-23)');
+                return;
+            }
+            
+            // 显示加载动画
+            showLoading();
+            
+            // 模拟API调用延迟
+            setTimeout(() => {
+                // 计算宫位
+                const monthPalace = (month - 1) % 9;
+                const dayPalace = (monthPalace + day - 1) % 9;
+                const hourNum = getHourIndex(hour);
+                const hourPalace = (dayPalace + hourNum - 1) % 9;
+                
+                // 显示结果
+                showResults('time', [
+                    { index: monthPalace, label: `月份宫位（月宫）` },
+                    { index: dayPalace, label: `日期宫位（日宫）` },
+                    { index: hourPalace, label: `时辰宫位（时宫）` }
+                ], `农历 ${month}月${day}日 ${hour}时 (${shichen[hourNum - 1]}时)`);
+            }, 1500);
+        });
+        
+        // 数字占卜
+        document.getElementById('number-btn').addEventListener('click', () => {
+            const num1 = parseInt(document.getElementById('num1').value);
+            const num2 = parseInt(document.getElementById('num2').value);
+            const num3 = parseInt(document.getElementById('num3').value);
+            
+            // 验证输入
+            if (isNaN(num1) || isNaN(num2) || isNaN(num3)) {
+                alert('请输入三个有效的数字');
+                return;
+            }
+            
+            // 显示加载动画
+            showLoading();
+            
+            // 模拟API调用延迟
+            setTimeout(() => {
+                // 计算宫位
+                const palace1 = (num1-1)%9;
+                const palace2 = (palace1+num2-1)%9;
+                const palace3 = (palace2+num3-1)%9;
+                
+                // 显示结果
+                showResults('number', [
+                    { index: palace1, label: `第一个数字宫位` },
+                    { index: palace2, label: `第二个数字宫位` },
+                    { index: palace3, label: `第三个数字宫位` }
+                ], `输入数字：${num1}, ${num2}, ${num3}`);
+            }, 1500);
+        });
+        
+        // 获取时辰索引
+        function getHourIndex(hour) {
+            if (hour >= 23 || hour < 1) return 1;
+            else if (hour < 3) return 2;
+            else if (hour < 5) return 3;
+            else if (hour < 7) return 4;
+            else if (hour < 9) return 5;
+            else if (hour < 11) return 6;
+            else if (hour < 13) return 7;
+            else if (hour < 15) return 8;
+            else if (hour < 17) return 9;
+            else if (hour < 19) return 10;
+            else if (hour < 21) return 11;
+            else return 12;
+        }
+        
+       
+        
+        // 显示加载动画
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+        }
+        
+        // 显示结果
+        function showResults(mode, palaceData, info) {
+            // 隐藏加载动画
+            document.getElementById('loading').style.display = 'none';
+            
+            // 更新结果信息
+            document.getElementById('result-info').innerHTML = `
+                <p style="font-size: 1.2rem; margin-bottom: 20px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    ${info}
+                </p>
+            `;
+            
+            // 生成宫位卡片
+            const palaceContainer = document.getElementById('palace-container');
+            palaceContainer.innerHTML = '';
+            
+            palaceData.forEach((data, i) => {
+                const palace = palaces[data.index];
+                
+                const card = document.createElement('div');
+                card.className = 'palace-card';
+                card.innerHTML = `
+                    <h3 class="palace-title">
+                        <span class="number">${i+1}</span>
+                        ${data.label}
+                    </h3>
+                    <div class="palace-info">
+                        <h4 style="color: ${palace.color}; font-size: 1.8rem; margin-bottom: 10px;">${palace.name}</h4>
+                        <span class="palace-element" style="background: ${palace.color};">
+                            五行属性：${palace.element}
+                        </span>
+                    </div>
+                    <div class="palace-details">
+                        ${palace.description}
+                    </div>
+                `;
+                
+                palaceContainer.appendChild(card);
+            });
+            
+            // 显示结果区域
+            document.getElementById('results').style.display = 'block';
+            
+            // 滚动到结果区域
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
